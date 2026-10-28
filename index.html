@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aló Mamá</title>
+<meta name="description" content="Aló Mamá: una llamada de Mamá que, si estás en peligro, avisa a tu familia por WhatsApp. 1er lugar en Emergencias y 2do general en Platanus Hack 26 Caracas.">
+<meta property="og:title" content="Aló Mamá">
+<meta property="og:description" content="Pide ayuda en secreto. Aprietas el volumen, Mamá te llama y, si dices tu frase, tu familia recibe tu ubicación por WhatsApp.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://alo-mama.vercel.app/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#EFFE00">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Aló Mamá · landing. Un afiche riso: papel, carbón y chartreuse. Bandas de
+   color alternadas, la ilustración grande, tipografía Lexend (la de la marca)
+   y una mono para datos y etiquetas, como la tarjeta de resultados del hack. */
+@font-face { font-family: "Lexend"; src: url("fonts/lexend-regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Lexend"; src: url("fonts/lexend-medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Lexend"; src: url("fonts/lexend-bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+
+:root {
+  color-scheme: light;
+  --paper: #FBFBF2; --paper-2: #F3F3E8; --paper-3: #E8E8DC;
+  --charcoal: #181918; --charcoal-2: #222421; --charcoal-3: #2E302C;
+  --chartreuse: #EFFE00; --lime-soft: #E9F68C; --olive: #4A5400; --olive-ink: #3C4400;
+  --ink: #1B1C16; --ink-2: #46483B; --line: #C9CAB8;
+  --paper-on-dark: #E8E8DE; --muted-on-dark: #B9BAAA; --line-on-dark: #343631;
+  --lilac: #DDE1FF; --lilac-ink: #0B1849;
+  --font: "Lexend", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --r: 24px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, figure, ul, ol, blockquote { margin: 0; }
+h1, h2, h3 { text-wrap: balance; letter-spacing: -.01em; }
+img, video, iframe { display: block; max-width: 100%; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--olive); outline-offset: 3px; }
+.band-dark a:focus-visible, .band-lime a:focus-visible { outline-color: currentColor; }
+.wrap { width: min(1120px, 100%); margin-inline: auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 760px) { .wrap { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+.mono { font-family: var(--mono); font-size: 13px; letter-spacing: .02em; }
+.eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--olive); }
+.band-dark .eyebrow { color: var(--chartreuse); }
+h2 { margin-top: 12px; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; font-weight: 700; }
+.lede { margin-top: 18px; max-width: 34em; font-size: clamp(18px, 2vw, 21px); line-height: 1.5; color: var(--ink-2); }
+.band-dark .lede { color: var(--muted-on-dark); }
+section { padding-block: clamp(64px, 9vw, 112px); }
+.band-dark { background: var(--charcoal); color: var(--paper-on-dark); }
+.band-lime { background: var(--chartreuse); color: var(--charcoal); }
+.band-soft { background: var(--paper-2); }
+.grain { position: relative; isolation: isolate; }
+.grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: .16; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .09 0 0 0 0 .1 0 0 0 0 .09 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.grain > * { position: relative; z-index: 1; }
+
+/* ------------------------------------------------ header */
+.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--paper) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.top-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; letter-spacing: .06em; font-size: 17px; }
+.wordmark img { width: 32px; height: 32px; border-radius: 50%; }
+.nav { display: none; gap: 4px; }
+@media (min-width: 900px) { .nav { display: flex; } }
+.nav a { padding: 8px 12px; border-radius: 999px; text-decoration: none; font-size: 15px; font-weight: 500; color: var(--ink-2); }
+.nav a:hover { background: var(--paper-3); color: var(--ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 999px; border: 2px solid var(--charcoal); background: var(--charcoal); color: var(--chartreuse); font: inherit; font-weight: 500; font-size: 15px; text-decoration: none; cursor: pointer; transition: transform .2s var(--ease), background .2s; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: scale(.98); }
+.btn.ghost { background: transparent; color: var(--charcoal); }
+.btn.ghost:hover { background: rgba(24,25,24,.08); }
+.btn.lime { background: var(--chartreuse); color: var(--charcoal); border-color: var(--chartreuse); }
+.btn svg { width: 18px; height: 18px; }
+.top .btn { min-height: 40px; padding: 0 16px; }
+
+/* ------------------------------------------------ hero */
+.hero { padding-block: clamp(32px, 4.5vw, 52px) 0; overflow: hidden; }
+.hero-grid { display: grid; gap: 24px; align-items: end; }
+@media (min-width: 860px) { .hero-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 40px; } }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: var(--charcoal); color: var(--chartreuse); font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.chip.outline { background: transparent; color: var(--charcoal); border: 1.5px solid var(--charcoal); }
+.chip b { font-weight: 500; }
+.hero h1 { margin-top: 22px; font-size: clamp(38px, 5.6vw, 68px); line-height: 1; font-weight: 700; letter-spacing: -.025em; }
+.hero p { margin-top: 18px; max-width: 30em; font-size: clamp(17px, 1.7vw, 19px); line-height: 1.5; color: var(--olive-ink); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; padding-bottom: clamp(32px, 4.5vw, 64px); }
+.hero-art { justify-self: center; width: min(100%, 440px); margin-bottom: -2px; }
+.hero-art img { width: 100%; height: auto; animation: float 6s ease-in-out infinite; filter: drop-shadow(0 18px 24px rgba(60, 68, 0, .25)); }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(-.5deg); } 50% { transform: translateY(-10px) rotate(.5deg); } }
+
+/* ------------------------------------------------ qué es */
+.split { display: grid; gap: 40px; }
+@media (min-width: 900px) { .split { grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 64px; align-items: start; } }
+.big { margin-top: 22px; font-size: clamp(22px, 2.6vw, 30px); line-height: 1.35; font-weight: 500; max-width: 24em; }
+.big em { font-style: normal; background: var(--lime-soft); padding: 0 .25em; border-radius: 6px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.facts { display: grid; gap: 0; border-top: 2px solid var(--charcoal); }
+.fact { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.fact strong { font-family: var(--mono); font-size: 30px; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; min-width: 4.5ch; }
+.fact span { color: var(--ink-2); font-size: 15px; line-height: 1.4; }
+.quote { margin-top: 36px; padding: 24px 28px; border-left: 4px solid var(--chartreuse); background: var(--paper-2); border-radius: 0 var(--r) var(--r) 0; }
+.quote p { font-size: 19px; line-height: 1.45; font-weight: 500; }
+.quote cite { display: block; margin-top: 10px; font-style: normal; font-family: var(--mono); font-size: 13px; color: var(--ink-2); }
+
+/* ------------------------------------------------ cómo funciona */
+.how { display: grid; gap: 40px; margin-top: 44px; }
+@media (min-width: 900px) { .how { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 56px; align-items: start; } }
+.recap { border-radius: var(--r); overflow: hidden; border: 2px solid var(--charcoal-3); background: var(--charcoal-2); aspect-ratio: 1; max-width: 100%; width: min(100%, 520px); margin-inline: auto; }
+@media (min-width: 900px) { .recap { position: sticky; top: 88px; width: auto; } }
+.recap video { width: 100%; height: 100%; object-fit: cover; }
+.steps { list-style: none; padding: 0; display: grid; gap: 0; counter-reset: step; }
+.step { position: relative; display: grid; grid-template-columns: 56px 1fr; gap: 20px; padding: 26px 0; border-top: 1px solid var(--line-on-dark); }
+.step:last-child { border-bottom: 1px solid var(--line-on-dark); }
+.step-n { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--chartreuse); color: var(--charcoal); font-family: var(--mono); font-size: 18px; font-weight: 500; }
+.step h3 { font-size: 22px; line-height: 1.2; font-weight: 700; }
+.step p { margin-top: 8px; color: var(--muted-on-dark); max-width: 36em; }
+.step img { width: 72px; height: 72px; position: absolute; right: 0; top: 22px; display: none; }
+@media (min-width: 560px) { .step { padding-right: 96px; } .step img { display: block; } }
+.keys { display: inline-flex; gap: 6px; vertical-align: -8px; margin: 0 4px; }
+.key { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--charcoal-3); border: 1px solid #454742; color: var(--paper-on-dark); font-family: var(--mono); font-size: 15px; animation: press 3.2s infinite; }
+.key:nth-child(1) { animation-delay: 0s; } .key:nth-child(2) { animation-delay: .5s; } .key:nth-child(3) { animation-delay: 1s; }
+@keyframes press { 0%, 8%, 100% { background: var(--charcoal-3); color: var(--paper-on-dark); transform: none; } 4% { background: var(--chartreuse); color: var(--charcoal); transform: translateY(2px); } }
+
+/* ------------------------------------------------ frases */
+.phrases { display: grid; gap: 16px; margin-top: 36px; }
+@media (min-width: 760px) { .phrases { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; } }
+.phrase { padding: 26px 28px 24px; border-radius: var(--r); }
+.phrase.alert { background: var(--lime-soft); color: var(--olive-ink); }
+.phrase.ok { background: var(--lilac); color: var(--lilac-ink); }
+.phrase h3 { font-family: var(--mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
+.phrase q { display: block; margin-top: 12px; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.25; font-weight: 700; quotes: "“" "”"; }
+.phrase p { margin-top: 12px; font-size: 15px; line-height: 1.5; }
+.fineprint { margin-top: 22px; max-width: 46em; color: var(--ink-2); }
+
+/* ------------------------------------------------ la app */
+.phones { display: grid; grid-auto-flow: column; grid-auto-columns: min(72%, 280px); gap: 18px; margin-top: 40px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; scrollbar-width: thin; }
+@media (min-width: 900px) { .phones { grid-auto-flow: row; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; } }
+.phone { scroll-snap-align: start; }
+.phone img { width: 100%; height: auto; border-radius: 28px; border: 1px solid var(--line); box-shadow: 0 20px 40px -24px rgba(27, 28, 22, .5); }
+.phone figcaption { margin-top: 12px; font-size: 14px; color: var(--ink-2); line-height: 1.4; }
+.phone figcaption b { display: block; color: var(--ink); font-weight: 500; }
+.central { margin-top: 72px; }
+.bento { display: grid; gap: 16px; margin-top: 32px; }
+@media (min-width: 760px) { .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); } .b-4 { grid-column: span 4; } .b-2 { grid-column: span 2; } .b-3 { grid-column: span 3; } .b-6 { grid-column: span 6; } }
+/* Tiles y fotos: el medio arriba con su proporción, la etiqueta debajo. Solo en
+   pantallas anchas, y solo sobre fotos (nunca sobre controles de video), la
+   etiqueta se superpone como una píldora. */
+.tile, .shot { position: relative; display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; background: var(--charcoal-2); border: 1px solid var(--line-on-dark); max-width: 100%; min-width: 0; }
+.tile { background: var(--charcoal); border-color: var(--line); }
+.tile.light { background: var(--paper); }
+.tile img, .tile video { width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; object-position: top; flex: none; }
+.tile.b-2 img { aspect-ratio: 4 / 5; }
+.tile figcaption, .shot figcaption { padding: 10px 14px; font-family: var(--mono); font-size: 12px; letter-spacing: .03em; color: var(--paper-on-dark); background: var(--charcoal-2); border-top: 1px solid var(--line-on-dark); }
+.tile figcaption { background: var(--charcoal); border-color: #2a2b27; }
+@media (min-width: 760px) {
+  .tile:not(.has-video) figcaption, .shot:not(.has-video) figcaption { position: absolute; left: 12px; bottom: 12px; padding: 6px 10px; border: 0; border-radius: 999px; background: rgba(24, 25, 24, .82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); pointer-events: none; }
+  /* en la cuadrícula, el medio crece hasta llenar la celda que le toca */
+  .tile img, .tile video, .shot > video, .shot > iframe, .shot button, .shot button img { flex: 1 1 auto; min-height: 0; }
+  .shot button { display: flex; flex-direction: column; }
+  .shot button img { height: 100%; }
+}
+
+/* ------------------------------------------------ mamá */
+.mama-grid { display: grid; gap: 32px; margin-top: 40px; }
+@media (min-width: 900px) { .mama-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 56px; align-items: center; } }
+.vid { border-radius: var(--r); overflow: hidden; border: 2px solid var(--charcoal); background: var(--charcoal); max-width: 100%; }
+.vid video { width: 100%; height: auto; }
+.poses { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 40px; }
+@media (min-width: 760px) { .poses { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.pose { text-align: center; }
+.pose img { width: 100%; height: auto; }
+.pose figcaption { margin-top: 4px; font-family: var(--mono); font-size: 12px; color: var(--ink-2); letter-spacing: .04em; }
+.familia { display: grid; gap: 24px; margin-top: 56px; align-items: center; }
+@media (min-width: 900px) { .familia { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 48px; } }
+.familia img { width: 100%; height: auto; border-radius: 20px; border: 1px solid var(--line); background: #fff; }
+
+/* ------------------------------------------------ cómo está hecho */
+.flow { display: grid; gap: 10px; margin-top: 44px; }
+@media (min-width: 900px) { .flow { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; } }
+.node { position: relative; padding: 18px 18px 16px; border-radius: 18px; background: var(--charcoal-2); border: 1px solid var(--line-on-dark); min-width: 0; }
+.node h3 { font-size: 17px; line-height: 1.25; font-weight: 700; }
+.node p { margin-top: 6px; font-size: 14px; line-height: 1.45; color: var(--muted-on-dark); }
+.node .tag { display: inline-block; margin-bottom: 10px; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--chartreuse); }
+.node.hot { border-color: var(--chartreuse); }
+@media (min-width: 900px) { .node:not(:last-child)::after { content: "→"; position: absolute; right: -14px; top: 50%; transform: translateY(-50%); z-index: 2; color: var(--chartreuse); font-family: var(--mono); font-size: 18px; } }
+.stack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.stack span { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line-on-dark); font-family: var(--mono); font-size: 13px; color: var(--paper-on-dark); }
+.repo { display: grid; gap: 16px; margin-top: 40px; padding: 24px; border-radius: var(--r); background: var(--charcoal-2); border: 1px solid var(--line-on-dark); }
+@media (min-width: 760px) { .repo { grid-template-columns: 1fr auto; align-items: center; } }
+.repo p { color: var(--muted-on-dark); max-width: 40em; }
+.repo p b { color: var(--paper-on-dark); font-weight: 500; }
+.repo-links { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ------------------------------------------------ resultados */
+.results { display: grid; gap: 32px; margin-top: 40px; align-items: start; }
+@media (min-width: 900px) { .results { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 56px; } }
+.card-img { border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: var(--charcoal); }
+.card-img img { width: 100%; height: auto; }
+.score { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: end; padding-bottom: 20px; border-bottom: 2px solid var(--charcoal); }
+@media (max-width: 480px) { .score { grid-template-columns: 1fr; } .score .chip { justify-self: start; } }
+.score strong { font-family: var(--mono); font-size: clamp(56px, 7vw, 84px); line-height: 1; font-weight: 500; letter-spacing: -.03em; }
+.score strong small { font-size: .4em; color: var(--ink-2); }
+.score p { color: var(--ink-2); font-size: 15px; }
+.score .chip { justify-self: end; }
+.table { width: 100%; border-collapse: collapse; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.table th, .table td { text-align: left; padding: 14px 0; border-bottom: 1px solid var(--line); font-weight: 400; vertical-align: baseline; }
+.table th { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding-top: 18px; }
+.table td.n { font-family: var(--mono); font-size: 20px; font-weight: 500; }
+.table td.r { text-align: right; }
+.table td .pill { display: inline-block; padding: 3px 9px; border-radius: 999px; background: var(--chartreuse); color: var(--charcoal); font-family: var(--mono); font-size: 12px; }
+.table td .avg { font-family: var(--mono); font-size: 13px; color: var(--ink-2); }
+.table td .w { font-size: 13px; color: var(--ink-2); }
+.track { display: flex; align-items: center; gap: 14px; margin-top: 24px; padding: 18px 20px; border-radius: 18px; background: var(--charcoal); color: var(--paper-on-dark); }
+.track .medal { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--chartreuse); color: var(--charcoal); font-family: var(--mono); font-weight: 500; flex: none; }
+.track b { display: block; font-weight: 700; color: #fff; }
+.track span { font-size: 14px; color: var(--muted-on-dark); }
+
+/* ------------------------------------------------ galería */
+.gal { display: grid; gap: 14px; margin-top: 40px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 760px) { .gal { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.shot { grid-column: span 2; }
+.shot > video, .shot > iframe { width: 100%; height: auto; object-fit: cover; aspect-ratio: var(--ar, 4 / 3); background: var(--charcoal); }
+.shot.g-3 { grid-column: span 3; } .shot.g-6 { grid-column: span 6; } .shot.g-4 { grid-column: span 4; }
+@media (max-width: 759px) { .shot, .shot.g-3, .shot.g-4, .shot.g-6 { grid-column: span 2; } }
+.shot button { all: unset; display: block; width: 100%; cursor: zoom-in; overflow: hidden; }
+.shot button img { width: 100%; height: auto; object-fit: cover; aspect-ratio: var(--ar, 4 / 3); transition: transform .5s var(--ease); }
+.shot button:hover img { transform: scale(1.03); }
+.shot.fit button img { object-fit: contain; padding: 6%; box-sizing: border-box; }
+.shot button:focus-visible { outline: 3px solid var(--chartreuse); outline-offset: -3px; }
+.shot iframe { border: 0; aspect-ratio: 16 / 9; }
+dialog.lb { padding: 0; border: 0; background: transparent; max-width: min(96vw, 1400px); max-height: 96vh; }
+dialog.lb::backdrop { background: rgba(24, 25, 24, .92); }
+dialog.lb img { max-width: 96vw; max-height: 90vh; width: auto; height: auto; border-radius: 12px; }
+dialog.lb form { position: absolute; right: 8px; top: 8px; }
+dialog.lb button { all: unset; cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--chartreuse); color: var(--charcoal); font-family: var(--mono); font-size: 18px; }
+
+/* ------------------------------------------------ equipo */
+.team { display: grid; gap: 14px; margin-top: 40px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.member { padding: 22px 20px 20px; border-radius: 20px; background: var(--paper); border: 1px solid var(--line); }
+.avatar { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--chartreuse); color: var(--charcoal); font-weight: 700; font-size: 18px; letter-spacing: .02em; }
+.member h3 { margin-top: 16px; font-size: 18px; line-height: 1.25; }
+.member p { margin-top: 6px; font-size: 14px; line-height: 1.45; color: var(--ink-2); }
+.member a { display: inline-block; margin-top: 12px; font-family: var(--mono); font-size: 13px; color: var(--olive); text-decoration: none; }
+.member a:hover { text-decoration: underline; }
+.thanks { margin-top: 36px; color: var(--ink-2); max-width: 50em; }
+
+/* ------------------------------------------------ footer */
+.foot { padding-block: 64px 40px; }
+.foot-in { display: grid; gap: 32px; align-items: center; }
+@media (min-width: 760px) { .foot-in { grid-template-columns: auto minmax(0, 1fr); gap: 48px; } }
+.foot img.big { width: 128px; height: 128px; border-radius: 50%; }
+.foot-slogan { font-size: clamp(24px, 3vw, 34px); line-height: 1.2; font-weight: 700; color: var(--chartreuse); }
+.foot p.small { margin-top: 14px; font-size: 14px; color: var(--muted-on-dark); max-width: 46em; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 20px; }
+.foot-links a { font-family: var(--mono); font-size: 13px; color: var(--paper-on-dark); }
+.foot-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line-on-dark); font-family: var(--mono); font-size: 12px; color: var(--muted-on-dark); }
+
+/* entradas al hacer scroll: solo donde el navegador lo soporta; en reposo todo es visible */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rise { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+    @keyframes rise { from { opacity: .2; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="wordmark" href="#inicio" aria-label="Aló Mamá, inicio"><img src="media/brand/logo-redondo.webp" alt="" width="32" height="32"><span aria-hidden="true">ALÓ MAMÁ</span></a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#como">Cómo funciona</a>
+      <a href="#app">La app</a>
+      <a href="#mama">Mamá</a>
+      <a href="#tech">Cómo está hecho</a>
+      <a href="#galeria">Galería</a>
+      <a href="#equipo">Equipo</a>
+    </nav>
+    <a class="btn" href="https://github.com/platanus-hack/platanus-hack-26-ve-team-27" target="_blank" rel="noopener">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span>Código</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<!-- ============================================================ hero -->
+<div class="band-lime grain hero" id="inicio">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="chips" aria-label="Reconocimientos">
+        <span class="chip outline">Platanus Hack 26 · Caracas</span>
+        <span class="chip"><b>1er lugar</b> · track Emergencias</span>
+        <span class="chip"><b>2do</b> de 22 equipos</span>
+      </div>
+      <h1>Mamá, siempre en el momento correcto.</h1>
+      <p>Aprietas el volumen, Mamá te llama y tú hablas como siempre. Si dices tu frase, tu familia recibe tu ubicación por WhatsApp. Para quien está al lado, es solo una llamada con mamá.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#como">Así funciona</a>
+        <a class="btn ghost" href="#galeria">Ver la premiación</a>
+      </div>
+    </div>
+    <div class="hero-art"><img src="media/brand/ilustracion.webp" alt="Ilustración de Mamá: pelo negro con volumen, lentes de sol en la cabeza, zarcillos y blusa oliva de lunares, dentro de un círculo chartreuse" width="1000" height="1000" fetchpriority="high"></div>
+  </div>
+</div>
+
+<!-- ============================================================ qué es -->
+<section aria-labelledby="t-que">
+  <div class="wrap split">
+    <div class="rise">
+      <p class="eyebrow">Qué es</p>
+      <h2 id="t-que">Una alarma que suena a llamada de mamá.</h2>
+      <p class="big">En un secuestro o un robo, sacar el teléfono para pedir ayuda puede empeorar las cosas. Aló Mamá convierte una llamada normal en un aviso silencioso: <em>nadie alrededor nota nada.</em></p>
+      <blockquote class="quote">
+        <p>“La única voz que puedo clonar esta noche con consentimiento es la mía. En producción, a ti te llama tu mamá de verdad.”</p>
+        <cite>Mariana, en el pitch frente al jurado</cite>
+      </blockquote>
+    </div>
+    <div class="facts rise" aria-label="Datos del proyecto">
+      <div class="fact"><strong>&lt;15&#8239;s</strong><span>desde que aprietas el volumen hasta que suena la llamada de Mamá</span></div>
+      <div class="fact"><strong>36&#8239;h</strong><span>de hackathon, de cero a producto, 24 y 25 de octubre de 2026</span></div>
+      <div class="fact"><strong>5</strong><span>personas: app, servidor, detector, voz y pitch</span></div>
+      <div class="fact"><strong>464</strong><span>commits y 96 pull requests en un solo repo público</span></div>
+      <div class="fact"><strong>2</strong><span>teléfonos y una llamada en vivo en la demo frente al jurado</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ cómo funciona -->
+<section class="band-dark" id="como" aria-labelledby="t-como">
+  <div class="wrap">
+    <p class="eyebrow">Cómo funciona</p>
+    <h2 id="t-como">Cuatro momentos. Ninguno se nota.</h2>
+    <div class="how">
+      <div class="recap rise">
+        <video src="media/video/recap.mp4" poster="media/video/recap.webp" autoplay muted loop playsinline preload="metadata" aria-label="Animación que resume los cuatro pasos de Aló Mamá"></video>
+      </div>
+      <ol class="steps">
+        <li class="step rise">
+          <span class="step-n" aria-hidden="true">1</span>
+          <div>
+            <h3>Pides ayuda en secreto</h3>
+            <p>Volumen <span class="keys" aria-label="arriba, abajo, arriba"><span class="key">↑</span><span class="key">↓</span><span class="key">↑</span></span> con el teléfono en el bolsillo, aunque esté bloqueado. La app manda tu GPS al servidor. Si no puedes hablar, el widget de la pantalla de inicio avisa de una vez.</p>
+          </div>
+          <img src="media/brand/mama-despierta.webp" alt="" width="72" height="72" loading="lazy">
+        </li>
+        <li class="step rise">
+          <span class="step-n" aria-hidden="true">2</span>
+          <div>
+            <h3>Te llama Mamá</h3>
+            <p>En menos de 15 segundos. Es un agente de voz que te saluda por tu nombre y te pregunta cómo vas, con la cadencia de una mamá venezolana. En tu teléfono aparece como el contacto “Mamá”.</p>
+          </div>
+          <img src="media/brand/mama-llamando.webp" alt="" width="72" height="72" loading="lazy">
+        </li>
+        <li class="step rise">
+          <span class="step-n" aria-hidden="true">3</span>
+          <div>
+            <h3>Dices tu frase</h3>
+            <p>Una frase de alerta que suena a conversación normal, o el silencio. Un detector de coacción, primero reglas y luego un LLM, revisa la llamada y decide. Con tu frase de “todo bien”, no se avisa a nadie.</p>
+          </div>
+          <img src="media/brand/mama-escuchando.webp" alt="" width="72" height="72" loading="lazy">
+        </li>
+        <li class="step rise">
+          <span class="step-n" aria-hidden="true">4</span>
+          <div>
+            <h3>Tu familia recibe un WhatsApp</h3>
+            <p>Con tu ubicación en vivo, el veredicto, lo que se entendió de la llamada y el enlace a la ficha del caso, con la grabación cuando esté lista. La central muestra la alerta en tiempo real.</p>
+          </div>
+          <img src="media/brand/mama-escribiendo.webp" alt="" width="72" height="72" loading="lazy">
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ frases -->
+<section class="band-soft" aria-labelledby="t-frases">
+  <div class="wrap">
+    <p class="eyebrow">Tus dos frases</p>
+    <h2 id="t-frases">Las eliges tú. Suenan a cualquier conversación.</h2>
+    <div class="phrases">
+      <div class="phrase alert rise"><h3>Frase de alerta</h3><q>Dile a la tía Carmen que llego tarde.</q><p>Tu familia recibe tu ubicación y sabe que necesitas ayuda. La llamada sigue como si nada.</p></div>
+      <div class="phrase ok rise"><h3>Frase de todo bien</h3><q>Voy llegando, ya casi.</q><p>No se le avisa a nadie. La llamada termina como cualquier otra, por si fue sin querer.</p></div>
+    </div>
+    <p class="fineprint">Si no dices ninguna de las dos, o te quedas en silencio, se avisa igual: no confirmaste que estás bien.</p>
+  </div>
+</section>
+
+<!-- ============================================================ la app -->
+<section id="app" aria-labelledby="t-app">
+  <div class="wrap">
+    <p class="eyebrow">La app</p>
+    <h2 id="t-app">Android nativo, con una sola pantalla que importa.</h2>
+    <p class="lede">La configuración pide los permisos en orden, guarda a “Mamá” en tus contactos y te deja elegir tus frases. Después de eso, la app vive en el bolsillo.</p>
+    <div class="phones">
+      <figure class="phone"><img src="media/app/setup-dark.webp" alt="Pantalla de configuración de Aló Mamá en modo oscuro: Tu familia, a un gesto, con la lista de permisos en orden" width="630" height="1400" loading="lazy"><figcaption><b>Configuración</b>Permisos en orden: notificaciones, ubicación, micrófono, contactos, SMS, batería y accesibilidad.</figcaption></figure>
+      <figure class="phone"><img src="media/app/config-dark.webp" alt="Pantalla con los números de la familia, la frase de alerta y la frase de todo bien" width="624" height="1400" loading="lazy"><figcaption><b>Tu familia y tus frases</b>Los números que reciben el aviso y las dos frases que solo tú conoces.</figcaption></figure>
+      <figure class="phone"><img src="media/app/trigger-dark.webp" alt="Pantalla Mamá te va a llamar, con un contador y los pasos: enviado, llamada de Mamá, mensaje a casa" width="630" height="1400" loading="lazy"><figcaption><b>Mamá te va a llamar</b>Lo que ves si miras el teléfono después del gesto, con el botón “Fue sin querer”.</figcaption></figure>
+      <figure class="phone"><img src="media/app/launcher.webp" alt="Pantalla de inicio de Android con el ícono de Aló Mamá" width="630" height="1400" loading="lazy"><figcaption><b>En el teléfono</b>Un ícono más entre las apps. Nada dice “emergencia”.</figcaption></figure>
+    </div>
+
+    <div class="central">
+      <p class="eyebrow">La central de la familia</p>
+      <h2>Cada alerta, en vivo y con su ficha.</h2>
+      <p class="lede">Una central web muestra el estado de la llamada, el recorrido en el mapa y a quién se le avisó. Al colgar, el caso queda sellado con la transcripción, la grabación y un PDF.</p>
+      <div class="bento">
+        <figure class="has-video tile b-4 rise"><video src="media/video/central-en-vivo.mp4" poster="media/video/central-en-vivo.webp" autoplay muted loop playsinline preload="none" aria-label="Grabación de pantalla de la central: una alerta pasa de En llamada a Coacción y se avisa a la familia"></video><figcaption>Central · en vivo</figcaption></figure>
+        <figure class="tile b-2 rise"><img src="media/app/central-movil.webp" alt="La central vista en un teléfono: lista de alertas con estados" width="646" height="1400" loading="lazy"><figcaption>Central · móvil</figcaption></figure>
+        <figure class="tile b-3 rise"><img src="media/app/central-sellada.webp" alt="Ficha de un caso sellado: línea de tiempo de la llamada, transcripción, recorrido y familia avisada" width="1600" height="1000" loading="lazy"><figcaption>Ficha del caso · sellada</figcaption></figure>
+        <figure class="tile b-3 rise"><img src="media/app/central-lista.webp" alt="Lista de reportes de la central con contadores de alertas, en llamada, activas y cerradas" width="1600" height="1000" loading="lazy"><figcaption>Central · reportes</figcaption></figure>
+        <figure class="tile light b-2 rise"><img src="media/app/ficha-pdf.webp" alt="Primera página del PDF de un caso: datos, línea de tiempo y transcripción" width="990" height="1400" loading="lazy" style="object-position: top"><figcaption>Ficha · PDF</figcaption></figure>
+        <figure class="tile b-4 rise"><img src="media/app/central-caso.webp" alt="Detalle de un caso en la central con la línea de tiempo y las personas notificadas" width="1600" height="1000" loading="lazy"><figcaption>Central · caso</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ mamá -->
+<section class="band-soft" id="mama" aria-labelledby="t-mama">
+  <div class="wrap">
+    <p class="eyebrow">El personaje</p>
+    <h2 id="t-mama">Mamá tiene cara, voz y familia.</h2>
+    <div class="mama-grid">
+      <figure class="vid rise">
+        <video src="media/video/mariana-vs-mama.mp4" poster="media/video/mariana-vs-mama.webp" controls playsinline preload="none" aria-label="Mariana hablando a la cámara al lado de Mamá, la ilustración animada que repite sus gestos"></video>
+      </figure>
+      <div class="rise">
+        <p class="lede">La voz de Mamá es la de Mariana, clonada con su consentimiento para el hackathon. El personaje es una ilustración estilo risografía con los colores de la marca: una señora venezolana arreglada, con los lentes de sol en la cabeza.</p>
+        <p class="lede">Para la demo, Mamá “habla” con un títere hecho en código que sigue el video de Mariana. Sin herramientas pagas: todo corre local.</p>
+      </div>
+    </div>
+    <div class="poses" aria-label="Las poses de Mamá en la app">
+      <figure class="pose rise"><img src="media/brand/mama-despierta.webp" alt="Mamá con los ojos abiertos, atenta" width="512" height="512" loading="lazy"><figcaption>despierta</figcaption></figure>
+      <figure class="pose rise"><img src="media/brand/mama-llamando.webp" alt="Mamá con el teléfono en la oreja" width="512" height="512" loading="lazy"><figcaption>llamando</figcaption></figure>
+      <figure class="pose rise"><img src="media/brand/mama-escuchando.webp" alt="Mamá con una ceja levantada, escuchando" width="512" height="512" loading="lazy"><figcaption>escuchando</figcaption></figure>
+      <figure class="pose rise"><img src="media/brand/mama-escribiendo.webp" alt="Mamá mirando el teléfono con las dos manos" width="512" height="512" loading="lazy"><figcaption>escribiendo</figcaption></figure>
+      <figure class="pose rise"><img src="media/brand/mama-lista.webp" alt="Mamá con los ojos cerrados y la mano en el pecho, aliviada" width="512" height="512" loading="lazy"><figcaption>lista</figcaption></figure>
+      <figure class="pose rise"><img src="media/brand/mama-pendiente.webp" alt="Mamá mirando hacia arriba, pendiente" width="512" height="512" loading="lazy"><figcaption>pendiente</figcaption></figure>
+    </div>
+    <div class="familia">
+      <div class="rise">
+        <p class="eyebrow">La familia de Mamá</p>
+        <h2 style="font-size: clamp(26px, 3vw, 34px)">Siete personajes en el mismo estilo.</h2>
+        <p class="lede">Papá, la tía Carmen (la de la frase clave), la hermana, el hermano, el tío y los abuelos: los contactos que reciben el aviso, dibujados con las mismas reglas que Mamá.</p>
+      </div>
+      <img class="rise" src="media/brand/familia.webp" alt="Afiche con los siete personajes de la familia de Mamá en círculos chartreuse: abuelo, abuela, tío, papá, Mamá, tía Carmen, hermana y hermano" width="1800" height="1320" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ cómo está hecho -->
+<section class="band-dark" id="tech" aria-labelledby="t-tech">
+  <div class="wrap">
+    <p class="eyebrow">Cómo está hecho</p>
+    <h2 id="t-tech">Un teléfono, un servidor y una llamada que vuelve.</h2>
+    <p class="lede">Sin login y sin tienda: la app genera un ID al instalarse y se instala por APK. El servidor decide qué hacer según la velocidad del teléfono: si vas en un carro, rastrea en silencio; si estás quieto, avisa de una vez; si no, llama Mamá.</p>
+    <div class="flow" aria-label="Arquitectura">
+      <div class="node rise"><span class="tag">App</span><h3>Android nativo</h3><p>Kotlin y Jetpack Compose. Detecta ↑↓↑ con el servicio de accesibilidad y manda GPS, velocidad y audio.</p></div>
+      <div class="node rise"><span class="tag">Servidor</span><h3>Go + Postgres</h3><p>Solo <code>net/http</code>, desplegado en Render. Recibe el incidente, elige la rama y dispara la llamada.</p></div>
+      <div class="node hot rise"><span class="tag">La llamada</span><h3>ElevenLabs + Twilio</h3><p>Un agente de voz con la voz clonada de Mariana llama por Twilio. Un webhook devuelve la transcripción.</p></div>
+      <div class="node rise"><span class="tag">Detector</span><h3>Reglas + LLM</h3><p>Primero reglas, luego Claude. Con evals de precisión y recall sobre más de 50 diálogos en el repo.</p></div>
+      <div class="node rise"><span class="tag">Aviso</span><h3>Kapso → WhatsApp</h3><p>Un solo mensaje a la familia con ubicación, veredicto y ficha. Central web y PDF del caso.</p></div>
+    </div>
+    <div class="stack" aria-label="Tecnologías">
+      <span>Kotlin</span><span>Jetpack Compose</span><span>Material 3</span><span>Go 1.24</span><span>Postgres</span><span>Render</span><span>ElevenLabs Agents</span><span>Twilio</span><span>Kapso</span><span>Claude</span><span>WhatsApp Cloud API</span>
+    </div>
+    <div class="repo rise">
+      <p><b>Todo el código es público.</b> App, servidor, detector con sus evals, central, diseño y la bitácora del equipo están en el repo de la organización de Platanus Hack. El APK se instala con adb; no está en Play Store.</p>
+      <div class="repo-links">
+        <a class="btn lime" href="https://github.com/platanus-hack/platanus-hack-26-ve-team-27" target="_blank" rel="noopener">Ver el repo</a>
+        <a class="btn ghost" style="color: var(--paper-on-dark); border-color: var(--line-on-dark)" href="https://github.com/platanus-hack/platanus-hack-26-ve-team-27/releases/latest/download/app-release.apk" target="_blank" rel="noopener">Descargar APK</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ resultados -->
+<section aria-labelledby="t-res">
+  <div class="wrap">
+    <p class="eyebrow">Resultados</p>
+    <h2 id="t-res">Lo que dijo el jurado.</h2>
+    <div class="results">
+      <figure class="card-img rise"><img src="media/photos/resultados.webp" alt="Tarjeta de resultados de Platanus Hack 26: 69.7 sobre 100, segundo de 22 equipos, con un radar de originalidad, ambición, ejecución y aspecto técnico" width="1024" height="1280" loading="lazy"></figure>
+      <div class="rise">
+        <div class="score">
+          <div><strong>69.7<small>/100</small></strong><p>Score final ponderado. El promedio de los 22 equipos fue 49.1.</p></div>
+          <span class="chip">#2 de 22</span>
+        </div>
+        <table class="table">
+          <thead><tr><th>Criterio</th><th class="r">Puesto</th><th class="r">Nota</th></tr></thead>
+          <tbody>
+            <tr><td>Originalidad <span class="w">(15%)</span></td><td class="r"><span class="pill">#2 de 22</span></td><td class="n r">79.0 <span class="avg">prom. 42.3</span></td></tr>
+            <tr><td>Ambición <span class="w">(20%)</span></td><td class="r"><span class="pill">#2 de 22</span></td><td class="n r">79.0 <span class="avg">prom. 51.7</span></td></tr>
+            <tr><td>Ejecución <span class="w">(20%)</span></td><td class="r"><span class="pill">#3 de 22</span></td><td class="n r">75.6 <span class="avg">prom. 52.7</span></td></tr>
+            <tr><td>Aspecto técnico <span class="w">(25%)</span></td><td class="r"><span class="pill">#4 de 22</span></td><td class="n r">75.6 <span class="avg">prom. 52.9</span></td></tr>
+          </tbody>
+        </table>
+        <div class="track"><span class="medal">1º</span><div><b>Primer lugar en el track de Emergencias</b><span>Y segundo lugar general entre los 22 equipos de Caracas.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ galería -->
+<section class="band-dark" id="galeria" aria-labelledby="t-gal">
+  <div class="wrap">
+    <p class="eyebrow">Galería</p>
+    <h2 id="t-gal">36 horas en fotos y video.</h2>
+    <p class="lede">La premiación, el equipo, el piso de la oficina donde dormimos por turnos y el video oficial del hackathon.</p>
+    <div class="gal">
+      <figure class="has-video shot g-4 rise" style="--ar: 16 / 9"><video src="media/video/premiacion.mp4" poster="media/video/premiacion.webp" controls playsinline preload="none" aria-label="Anuncio de los ganadores: dicen Aló Mamá, equipo 27, y el equipo sube a recibir el premio"></video><figcaption>Premiación · “Aló mamá, team 27”</figcaption></figure>
+      <figure class="shot rise" style="--ar: 3 / 4"><button type="button" data-full="media/photos/laptop.webp"><img src="media/photos/laptop.webp" alt="Laptop con la calcomanía PH26 y un sticker que dice --dangerously-skip-permissions, con dos compañeros trabajando al fondo" width="1200" height="1600" loading="lazy"></button><figcaption>Sábado, 4 a.m.</figcaption></figure>
+      <figure class="shot g-3 rise" style="--ar: 3 / 2"><button type="button" data-full="media/photos/equipo-ventana.webp"><img src="media/photos/equipo-ventana.webp" alt="El equipo frente a la ventana con Caracas de fondo, y un compañero dormido en una colchoneta en el piso" width="1800" height="1200" loading="lazy"></button><figcaption>El equipo (y uno durmiendo)</figcaption></figure>
+      <figure class="has-video shot g-3 rise" style="--ar: 848 / 384"><video src="media/video/subida.mp4" poster="media/video/subida.webp" controls playsinline preload="none" aria-label="Video desde el público: el equipo sube al escenario a recibir el premio"></video><figcaption>Subiendo al escenario</figcaption></figure>
+      <figure class="shot g-3 rise" style="--ar: 4 / 3"><button type="button" data-full="media/photos/selfie.webp"><img src="media/photos/selfie.webp" alt="Selfie de Mariana riéndose con un compañero haciendo una mueca detrás, en el espacio del hackathon" width="1800" height="1350" loading="lazy"></button><figcaption>Hora 20</figcaption></figure>
+      <figure class="shot g-3 rise" style="--ar: 4 / 3"><button type="button" data-full="media/photos/mirador.webp"><img src="media/photos/mirador.webp" alt="Nueve participantes del hackathon en un mirador de noche con las luces de Caracas detrás" width="1800" height="1350" loading="lazy"></button><figcaption>Caracas de noche, después del cierre</figcaption></figure>
+      <figure class="has-video shot g-4 rise"><iframe src="https://www.youtube-nocookie.com/embed/f4MMm92VKbU" title="Platanus Hack 26: Un sueño con fiebre, video oficial" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><figcaption>Video oficial de Platanus Hack 26</figcaption></figure>
+      <figure class="shot rise" style="--ar: 4 / 5"><button type="button" data-full="media/photos/badge.webp"><img src="media/photos/badge.webp" alt="Credencial de hacker de Platanus Hack 26 Caracas a nombre de Daniel Alejandro Ross Requena" width="1080" height="1350" loading="lazy"></button><figcaption>La credencial</figcaption></figure>
+      <figure class="has-video shot g-3 rise" style="--ar: 1"><video src="media/video/mama-hablando.mp4" poster="media/video/mama-hablando.webp" controls playsinline preload="none" aria-label="Mamá, la ilustración, hablando con la voz de Mariana"></video><figcaption>Mamá hablando</figcaption></figure>
+      <figure class="shot g-3 fit rise" style="--ar: 1"><button type="button" data-full="media/brand/lockup-oscuro.webp"><img src="media/brand/lockup-oscuro.webp" alt="Logo de Aló Mamá con el nombre y el slogan sobre fondo carbón" width="1600" height="800" loading="lazy"></button><figcaption>El logo</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ equipo -->
+<section class="band-soft" id="equipo" aria-labelledby="t-equipo">
+  <div class="wrap">
+    <p class="eyebrow">Equipo 27</p>
+    <h2 id="t-equipo">Cinco personas, un repo y dos teléfonos.</h2>
+    <div class="team">
+      <article class="member rise"><span class="avatar" aria-hidden="true">SP</span><h3>Samuel Palacios</h3><p>Tech lead. El servidor, el contrato, el motor de llamadas, las tres ramas y el notificador.</p><a href="https://github.com/samuelpalacioss" target="_blank" rel="noopener">@samuelpalacioss</a></article>
+      <article class="member rise"><span class="avatar" aria-hidden="true">DR</span><h3>Daniel Ross</h3><p>La app Android y la unión teléfono, servidor y llamada. El personaje de Mamá y la marca.</p><a href="https://github.com/danirssx" target="_blank" rel="noopener">@danirssx</a></article>
+      <article class="member rise"><span class="avatar" aria-hidden="true">MF</span><h3>Mariana Fes</h3><p>Pantallas, diálogos de evaluación, el pitch frente al jurado y la voz de Mamá.</p><a href="https://github.com/marifesss" target="_blank" rel="noopener">@marifesss</a></article>
+      <article class="member rise"><span class="avatar" aria-hidden="true">DC</span><h3>Daniel Castellanos</h3><p>Build y firma del APK, el disparo con el teléfono bloqueado en el Xiaomi y los extras.</p><a href="https://github.com/DanCas03" target="_blank" rel="noopener">@DanCas03</a></article>
+      <article class="member rise"><span class="avatar" aria-hidden="true">SV</span><h3>Sebastián Vera</h3><p>El detector de coacción con sus evals, la nota de sistemas operativos y las pruebas en vivo.</p><a href="https://github.com/sebaveaa" target="_blank" rel="noopener">@sebaveaa</a></article>
+    </div>
+    <p class="thanks">Gracias a Platanus por organizar el hackathon en Caracas, y a ElevenLabs, Kapso, Render, Vercel, Anthropic, Cashea y Yummy por apoyarlo.</p>
+  </div>
+</section>
+</main>
+
+<footer class="band-dark foot">
+  <div class="wrap">
+    <div class="foot-in">
+      <img class="big" src="media/brand/logo-redondo.webp" alt="" width="128" height="128" loading="lazy">
+      <div>
+        <p class="foot-slogan">Ojalá nunca la necesites. Si la necesitas, ahí está.</p>
+        <p class="small">Aló Mamá es un prototipo hecho en Platanus Hack 26 Caracas, 24 y 25 de octubre de 2026. “Mamá” es el personaje: el contacto que llama. No sustituye a los servicios de emergencia.</p>
+        <div class="foot-links">
+          <a href="https://github.com/platanus-hack/platanus-hack-26-ve-team-27" target="_blank" rel="noopener">Repositorio</a>
+          <a href="https://github.com/platanus-hack/platanus-hack-26-ve-team-27/releases/latest/download/app-release.apk" target="_blank" rel="noopener">APK</a>
+          <a href="https://www.youtube.com/watch?v=f4MMm92VKbU" target="_blank" rel="noopener">Video oficial del hack</a>
+          <a href="https://platan.us" target="_blank" rel="noopener">Platanus</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom"><span>ALÓ MAMÁ · equipo 27</span><span>Caracas, Venezuela · 2026</span></div>
+  </div>
+</footer>
+
+<dialog class="lb" id="lb" aria-label="Foto ampliada">
+  <img id="lb-img" src="" alt="">
+  <form method="dialog"><button type="submit" aria-label="Cerrar">×</button></form>
+</dialog>
+
+<script>
+(function () {
+  var lb = document.getElementById('lb'), im = document.getElementById('lb-img');
+  if (!lb || !lb.showModal) return;
+  document.querySelectorAll('.shot button[data-full]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var src = b.querySelector('img');
+      im.src = b.dataset.full; im.alt = src ? src.alt : '';
+      lb.showModal();
+    });
+  });
+  lb.addEventListener('click', function (e) { if (e.target === lb) lb.close(); });
+  lb.addEventListener('close', function () { im.src = ''; });
+  // los videos en loop sin sonido solo corren cuando se ven
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); } });
+    }, { threshold: .2 });
+    document.querySelectorAll('video[autoplay]').forEach(function (v) { io.observe(v); });
+  }
+})();
+</script>
+</body>
+</html>
